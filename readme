@@ -1,0 +1,47 @@
+ci joint le fichier YAML de configuration de l'ingress HA-PROXY ingress, mais vous devez faire des modif avant de l'appliquer
+voici la procedure : 
+1 - editer le fichier haproxy-ingress.yaml : 
+  the last section : service : editer les parametre entre ##   ##  il faut que : 
+                 type : LoadBalancer
+                 externalIPs:
+                    - @ IP de votre domaine exemple si vous avez un DNS test.com mapper sur 10.10.10.10 donc mettre cette @ comme exterbal ip
+
+      metadata:
+  labels:
+    run: haproxy-ingress
+  name: haproxy-kubernetes-ingress
+  namespace: haproxy-controller
+spec:
+  selector:
+    run: haproxy-ingress
+  type: ##LoadBalancer##
+  externalIPs:
+    - ##Ip mapper sur votre domaine name##
+
+2 - kubectl apply -f haproxy-ingress.yaml -n namespace
+3 - ensuite creer votre ingress : 
+exemple : touch ingress-test.taml
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spring-test ### le nom que vous voukez
+  namespace: votre namespace
+  annotations:
+        haproxy.org/path-rewrite: "/"
+spec:
+  
+  rules:
+  - host: test.com  ### changer avec votre DNS
+    http:
+      paths: 
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: spring-service  ### changer votre service qui tourne dans le mm namespace
+            port:
+              number: 80 ### port exposer de votre service
+
+4 - kubectl apply -f ingress-test.taml
+
