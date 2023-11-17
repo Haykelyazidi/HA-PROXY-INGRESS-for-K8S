@@ -1,10 +1,12 @@
-ci joint le fichier YAML de configuration de l'ingress HA-PROXY ingress, mais vous devez faire des modif avant de l'appliquer
+ci joint le fichier YAML de configuration de l'ingress HA-PROXY ingress, 
+mais vous devez faire des modif avant de l'appliquer
 voici la procedure : 
 1 - editer le fichier haproxy-ingress.yaml : 
   the last section : service : editer les parametre entre ##   ##  il faut que : 
                  type : LoadBalancer
                  externalIPs:
-                    - @ IP de votre domaine exemple si vous avez un DNS test.com mapper sur 10.10.10.10 donc mettre cette @ comme exterbal ip
+                    - @ IP de votre domaine exemple si vous avez un DNS test.com mapper sur 10.10.10.10 
+                      donc mettre cette @ comme external ip
 
       metadata:
   labels:
